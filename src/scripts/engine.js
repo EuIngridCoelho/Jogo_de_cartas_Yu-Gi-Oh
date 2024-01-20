@@ -69,21 +69,21 @@ async function createCardImage(idCard, fieldSide) {
     cardImage.classList.add("card");
 
     if (fieldSide === playerSides.player1) {
-        cardImage.addEventListener("mouseover", ()=>{
+        cardImage.addEventListener("mouseover", () => {
             drawSelectCard(idCard);
         });
 
         cardImage.addEventListener("click", () => {
             setCardsField(cardImage.getAttribute("data-id"));
         });
-        
+
     }
 
     return cardImage
 
 }
 
-async function setCardsField(cardId){
+async function setCardsField(cardId) {
 
     await removeAllCardsImages();
 
@@ -95,22 +95,52 @@ async function setCardsField(cardId){
     state.fieldCards.player.src = cardData[cardId].img;
     state.fieldCards.computer.src = cardData[computerCardId].img;
 
-    let duelResults = await chackDuelResults(cardId, computerCardId);
+    let duelResults = await checkDuelResults(cardId, computerCardId);
 
     await updateScore();
     await drawButton(duelResults);
 }
 
-async function removeAllCardsImages(){
-    let {computerBOX, player1BOX} = state.playerSides;
-    let imgElements = cards.querySelectorAll("img");
-    imgElements.forEach((img)=> img.remove());
 
-    imgElements = cards.querySelectorAll("img");
-    imgElements.forEach((img)=> img.remove());
+async function drawButton(text) {
+    state.actions.button.innerText = text;
+    state.actions.button.style.display = "block";
 }
 
-async function drawSelectCard(index){
+
+async function updateScore(){
+    state.score.scoreBox.innerText = `Win: ${state.score.playerScore} | Lose: ${state.score.computerScore}`
+}
+
+async function checkDuelResults(playerCardId, computerCardId) {
+    let duelResults = "Empate";
+    let playerCard = cardData[playerCardId];
+
+
+    if (playerCard.WinOf.includes(computerCardId)) {
+        duelResults = "Ganhou!";
+        state.score.playerScore++;
+    }
+
+    if (playerCard.LoseOf.includes(computerCardId)) {
+        duelResults = "Perdeu!";
+        state.score.computerScore++;
+    }
+
+    return duelResults;
+
+}
+
+async function removeAllCardsImages() {
+    let { computerBOX, player1BOX } = state.playerSides;
+    let imgElements = cards.querySelectorAll("img");
+    imgElements.forEach((img) => img.remove());
+
+    imgElements = cards.querySelectorAll("img");
+    imgElements.forEach((img) => img.remove());
+}
+
+async function drawSelectCard(index) {
     state.cardSprites.avatar.src = cardData[index].img;
     state.cardSprites.name.innerText = cardData[index].name;
     state.cardSprites.type.innerText = "Attribute: " + cardData[index].type;
