@@ -64,6 +64,9 @@ a:hover{
     background-color: #fff;
     padding: 30px;
 }
+#score_points{
+    font-size: 0.8rem;
+}
 
 .frame {
     border: 3px solid #000000;
